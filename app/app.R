@@ -59,6 +59,7 @@ AFLSS3 = AFLSS3 %>%
   )
 
 fund_list = AFLSS3 %>%
+  filter(!is.na(Operating_expense_ratio) & Operating_expense_ratio > 0) %>% 
   pluck("Fund_name") %>%
   str_replace_all("([^A-Z,a-z,0-9, ,\\&,-])", "")
 
@@ -69,13 +70,16 @@ ui <- bootstrapPage(
    # Application title
    titlePanel("APRA Superannuation Data Explorer"),
    selectInput("fund", "Select a Fund:",choices=fund_list),
-   plotOutput("distPlot",width = "100%", height = 600)
+   splitLayout(
+     plotOutput("costs",width = "100%", height = 580),
+     plotOutput("returns",width = "100%", height = 580)
+   )
 )
 #------------------------------------------------------------------------------
 # Define server logic required to draw a histogram
 server <- function(input, output) {
    
-   output$distPlot <- renderPlot({
+   output$costs <- renderPlot({
       # generate bins based on input$bins from ui.R
       # x    <- faithful[, 2] 
       # bins <- seq(min(x), max(x), length.out = 20 + 1)
@@ -109,12 +113,57 @@ server <- function(input, output) {
                  nudge_x = 0.01,
                  show.legend = F)+
        no_legend_title()+
-       labs(title = "Fund Performance",
-            subtitle = "Costs: Lower is better",
+       labs(title = "Operating Costs (%)",
             x = "Operating Expense Ratio (%)")+
-       theme(strip.text.y = element_text(size = 10, angle = 0))
+       theme(strip.text.y = element_text(size = 10, angle = 0))+
+       no_y_axis()+
+       no_minor_gridlines()
+     
    })
-   }
+
+   output$returns <- renderPlot({
+     # generate bins based on input$bins from ui.R
+     # x    <- faithful[, 2] 
+     # bins <- seq(min(x), max(x), length.out = 20 + 1)
+     # 
+     # # draw the histogram with the specified number of bins
+     # hist(x, breaks = bins, col = 'darkgray', border = 'white')
+     AFLSS2 %>% 
+       ggplot(aes(x = Ten_year_rate_of_return,
+                  fill = RSE_Regulatory_classification,
+                  colour = RSE_Regulatory_classification))+
+       geom_density(alpha = 0.4)+
+       facet_grid(Fund_type~.)+
+       scale_x_continuous(labels = scales::percent_format(),
+                          breaks = seq(-0.06, 0.12, 0.02))+
+       theme_ipsum()+
+       no_gridlines()+
+       legend_bottom()+
+       geom_vline(xintercept = 0)+
+       geom_vline(data = filter(AFLSS2, Fund_name %in% input$fund),
+                  aes(xintercept = Ten_year_rate_of_return,
+                      colour = RSE_Regulatory_classification),
+                  show.legend = F)+
+       geom_text(data = filter(AFLSS2, Fund_name %in% input$fund),
+                 aes(x = Ten_year_rate_of_return, y= 150, label = Fund_name),
+                 hjust = "right", show.legend = F,
+                 nudge_x = -0.0005)+
+       geom_text(data = filter(AFLSS2, Fund_name %in% input$fund),
+                 aes(x = Ten_year_rate_of_return, y= 150, label = percent_label(Ten_year_rate_of_return)),
+                 hjust = "left", show.legend = F,
+                 nudge_x = 0.0005)+
+       no_legend_title()+
+       labs(title = "Annualized Returns (10Y)",
+            x = "Ten Year Rate of Return (%)")+
+       theme(strip.text.y = element_text(size = 10, angle = 0),
+             strip.placement = "inside")+
+       no_y_axis()
+   }) 
+   
+}
+
+
+
 
 #------------------------------------------------------------------------------
 # Run the application 
