@@ -72,8 +72,8 @@ ui <- bootstrapPage(
    titlePanel("APRA Superannuation Data Explorer"),
    selectInput("fund", "Select a Fund:",choices=fund_list),
    splitLayout(
-     plotOutput("costs",width = "100%", height = 580),
-     plotOutput("returns",width = "100%", height = 580)
+     plotOutput("costs",width = "100%", height = 560),
+     plotOutput("returns",width = "100%", height = 560)
    )
 )
 #------------------------------------------------------------------------------
