@@ -1,5 +1,6 @@
 # APRA
-Exploratory Data Analysis of Australian Superannuation Data
+
+An example shiny app to explore costs and returns of an Australian Superannuation fund ascompared to other funds. The Performance is relative to funds of the same type (Industry, Retail, Public Sector) and by Classification (Open or Closed)
 
 All data is from the [Annual Fund-Level Superannuation Statistics](http://www.apra.gov.au/Super/Publications/Pages/superannuation-fund-level-publications.aspx) 2017 publication from the Australian Prudential Regulation Authority (APRA).
 
