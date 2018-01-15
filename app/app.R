@@ -65,24 +65,12 @@ fund_list = AFLSS3 %>%
 #------------------------------------------------------------------------------
 
 # Define UI for application that draws a histogram
-ui <- fluidPage(
+ui <- bootstrapPage(
    # Application title
    titlePanel("APRA Superannuation Data Explorer"),
-   
-   # Sidebar with a slider input for number of bins 
-   sidebarLayout(
-      sidebarPanel(
-        selectInput("fund", "Select a Fund:", 
-                    choices=fund_list)
-        ),
-      
-      # Show a plot of the generated distribution
-      mainPanel(
-         plotOutput("distPlot",width = "100%", height = 600)
-      )
-   )
+   selectInput("fund", "Select a Fund:",choices=fund_list),
+   plotOutput("distPlot",width = "100%", height = 600)
 )
-
 #------------------------------------------------------------------------------
 # Define server logic required to draw a histogram
 server <- function(input, output) {
