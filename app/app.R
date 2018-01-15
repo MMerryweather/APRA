@@ -115,7 +115,9 @@ server <- function(input, output) {
        no_legend_title()+
        labs(title = "Operating Costs (%)",
             x = "Operating Expense Ratio (%)")+
-       theme(strip.text.y = element_text(size = 10, angle = 0))+
+       theme(strip.text.y = element_text(size = 12,
+                                         angle = 0,
+                                         hjust = 1))+
        no_y_axis()+
        no_minor_gridlines()
      
@@ -155,7 +157,7 @@ server <- function(input, output) {
        no_legend_title()+
        labs(title = "Annualized Returns (10Y)",
             x = "Ten Year Rate of Return (%)")+
-       theme(strip.text.y = element_text(size = 10, angle = 0),
+       theme(strip.text.y = element_blank(),
              strip.placement = "inside")+
        no_y_axis()
    }) 
