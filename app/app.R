@@ -55,11 +55,12 @@ AFLSS3 = AFLSS3 %>%
     Operating_expense_ratio = (
       Total_administration_and_operating_expenses + Advice_expenses
     ) / Cash_flow_adjusted_net_assets,
+    Total_cost_ratio = Operating_expense_ratio + Investment_expenses_ratio,
     One_year_rate_of_return = Net_earnings_after_tax / Cash_flow_adjusted_net_assets
   )
 
 fund_list = AFLSS3 %>%
-  filter(!is.na(Operating_expense_ratio) & Operating_expense_ratio > 0) %>% 
+  filter(!is.na(Total_cost_ratio) & Total_cost_ratio > 0) %>% 
   pluck("Fund_name") %>%
   str_replace_all("([^A-Z,a-z,0-9, ,\\&,-])", "")
 
@@ -87,7 +88,7 @@ server <- function(input, output) {
       # # draw the histogram with the specified number of bins
       # hist(x, breaks = bins, col = 'darkgray', border = 'white')
      AFLSS3 %>% 
-       ggplot(aes(x = Operating_expense_ratio,
+       ggplot(aes(x = Total_cost_ratio,
                   fill = RSE_Regulatory_classification,
                   colour = RSE_Regulatory_classification))+
        geom_density(alpha = 0.4)+
@@ -99,22 +100,22 @@ server <- function(input, output) {
        legend_bottom()+
        no_legend_title()+
        geom_vline(data = filter(AFLSS3, Fund_name %in% input$fund),
-                  aes(xintercept = Operating_expense_ratio,
+                  aes(xintercept = Total_cost_ratio,
                       colour = RSE_Regulatory_classification),
                   show.legend = F)+
        geom_text(data = filter(AFLSS3, Fund_name %in% input$fund),
-                 aes(x = Operating_expense_ratio, y  = 2.5, label = Fund_name),
+                 aes(x = Total_cost_ratio, y  = 2.5, label = Fund_name),
                  hjust = "right",
                  nudge_x = -0.01,
                  show.legend = F)+
        geom_text(data = filter(AFLSS3, Fund_name %in% input$fund),
-                 aes(x = Operating_expense_ratio, y= 2.5, label = percent_label(Operating_expense_ratio)),
+                 aes(x = Total_cost_ratio, y= 2.5, label = percent_label(Total_cost_ratio)),
                  hjust = "left",
                  nudge_x = 0.01,
                  show.legend = F)+
        no_legend_title()+
-       labs(title = "Operating Costs (%)",
-            x = "Operating Expense Ratio (%)")+
+       labs(title = "Costs (% of Net Adjusted Cash Flow)",
+            x = "Total Cost Ratio (%)")+
        theme(strip.text.y = element_text(size = 12,
                                          angle = 0,
                                          hjust = 1))+
