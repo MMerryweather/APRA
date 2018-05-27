@@ -76,6 +76,7 @@ ui <- bootstrapPage(
      plotOutput("returns",width = "100%", height = 560)
    )
 )
+
 #------------------------------------------------------------------------------
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -162,11 +163,7 @@ server <- function(input, output) {
              strip.placement = "inside")+
        no_y_axis()
    }) 
-   
 }
-
-
-
 
 #------------------------------------------------------------------------------
 # Run the application 
